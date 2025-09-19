@@ -1,0 +1,192 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RiAD analyzer (ai pro) -- Wingo 30s Random</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#00d1b2;--muted:#9aa4b2;--glass:rgba(255,255,255,0.04)}
+    *{box-sizing:border-box;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+    body{margin:0;min-height:100vh;background:linear-gradient(180deg,#071021 0%, #08162a 100%);color:#e6eef6;display:flex;align-items:center;justify-content:center;padding:24px}
+    .wrap{width:980px;max-width:96%;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(2,6,23,0.7);display:grid;grid-template-columns:1fr 420px}
+    .left{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:30px}
+    .brand{display:flex;align-items:center;gap:16px}
+    .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#5eead4);display:grid;place-items:center;color:#042024;font-weight:800;font-size:22px}
+    h1{margin:0;font-size:20px}
+    .sub{color:var(--muted);margin-top:6px;font-size:13px}
+
+    .card{margin-top:22px;background:var(--card);padding:18px;border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+    .result-big{font-weight:800;font-size:40px;letter-spacing:2px}
+    .meta{display:flex;gap:12px;margin-top:12px;align-items:center}
+
+    .btn{background:linear-gradient(90deg,var(--accent),#66ffd7);border:none;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
+
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .small{font-size:13px;color:var(--muted)}
+
+    /* right column */
+    .right{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:28px;border-left:1px solid rgba(255,255,255,0.02)}
+    .panel{background:var(--glass);padding:14px;border-radius:12px}
+
+    .pattern{font-family:monospace;font-size:20px;letter-spacing:6px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));text-align:center}
+
+    .range-btns{display:flex;gap:8px;margin-top:12px}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    .tg{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#e6f7f2;background:linear-gradient(90deg,#0088cc,#00a5e6);padding:8px 10px;border-radius:10px}
+
+    @media (max-width:920px){.wrap{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap" role="application">
+    <div class="left">
+      <div class="brand">
+        <div class="logo">RiAD</div>
+        <div>
+          <h1>RiAD analyzer <span style="opacity:.85;font-weight:700">(ai pro)</span></h1>
+          <div class="sub">Wingo 30s -- Random result preview • Beautiful UI • Quick peek</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="small">Current result</div>
+            <div id="resultDisplay" class="result-big">--</div>
+            <div class="meta">
+              <div class="small">Number: <strong id="numDisplay">--</strong></div>
+              <div class="small">Pattern: <strong id="patternDisplay">--</strong></div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <button class="btn" id="peekBtn">Peek random result</button>
+            <div style="margin-top:10px"><button class="ghost" id="copyBtn">Copy result</button></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="ghost" id="patternOnly">Random pattern (1-9, 9 chars)</button>
+          <button class="ghost" id="num04">Pick number 0-4</button>
+          <button class="ghost" id="num59">Pick number 5-9</button>
+          <div style="flex:1"></div>
+          <div class="small">Example: <strong>1-9 BSBBSSBB</strong></div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:12px;align-items:center">
+        <a class="tg" href="https://t.me/EXORIAD" target="_blank" rel="noopener">Join TG • @EXORIAD</a>
+        <div class="small">Use the buttons to generate random previews. This is a frontend demo -- no real betting connection.</div>
+      </div>
+
+      <footer>
+        <div>Made with ❤️ for quick preview -- RiAD analyzer (ai pro)</div>
+      </footer>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>Random pattern preview</strong>
+          <span class="small">Length: 9</span>
+        </div>
+        <div class="pattern" id="patternBox">-- -- -- -- -- -- -- -- --</div>
+
+        <div class="range-btns">
+          <button class="btn" id="peekPatternBtn">Peek pattern</button>
+          <button class="ghost" id="peekNumBtn">Peek number</button>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="small">Quick controls</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="ghost" id="seedBtn">Seed: time</button>
+            <button class="ghost" id="shuffleBtn">Shuffle</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:18px"></div>
+
+      <div class="panel" style="margin-top:12px">
+        <strong>How it works</strong>
+        <p class="small" style="margin-top:8px">This demo picks a random 9-character pattern of B (Big) and S (Small) and a random single digit number. You can force number ranges 0–4 or 5–9. Use Copy to paste results to chat or your notes.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Utility
+    function randInt(min, max){return Math.floor(Math.random()*(max-min+1))+min}
+    function randPattern(len){let out='';for(let i=0;i<len;i++){out += Math.random() < 0.5 ? 'B' : 'S'; if(i < len-1) out += '';}return out}
+
+    const resultDisplay = document.getElementById('resultDisplay');
+    const numDisplay = document.getElementById('numDisplay');
+    const patternDisplay = document.getElementById('patternDisplay');
+    const patternBox = document.getElementById('patternBox');
+
+    function showResult(number, pattern){
+      resultDisplay.textContent = number + ' -- ' + pattern.split('').join('');
+      numDisplay.textContent = number;
+      patternDisplay.textContent = pattern;
+      patternBox.textContent = pattern.split('').join(' ');
+      // quick highlight animation
+      resultDisplay.style.opacity = 0; setTimeout(()=> resultDisplay.style.opacity=1,60);
+    }
+
+    // Main peek action
+    document.getElementById('peekBtn').addEventListener('click', ()=>{
+      const pattern = randPattern(9);
+      const number = randInt(1,9); // as example 1-9
+      showResult(number, pattern);
+    });
+
+    document.getElementById('patternOnly').addEventListener('click', ()=>{
+      const pattern = randPattern(9);
+      patternBox.textContent = pattern.split('').join(' ');
+      patternDisplay.textContent = pattern;
+    });
+
+    document.getElementById('peekPatternBtn').addEventListener('click', ()=>{
+      const pattern = randPattern(9);
+      patternBox.textContent = pattern.split('').join(' ');
+    });
+
+    document.getElementById('peekNumBtn').addEventListener('click', ()=>{
+      const n = randInt(1,9);
+      numDisplay.textContent = n;
+      resultDisplay.textContent = n + ' -- ' + (patternDisplay.textContent==='--' ? randPattern(9) : patternDisplay.textContent);
+    });
+
+    // Range buttons
+    document.getElementById('num04').addEventListener('click', ()=>{
+      const n = randInt(0,4);
+      numDisplay.textContent = n;
+      resultDisplay.textContent = n + ' -- ' + (patternDisplay.textContent==='--' ? randPattern(9) : patternDisplay.textContent);
+    });
+    document.getElementById('num59').addEventListener('click', ()=>{
+      const n = randInt(5,9);
+      numDisplay.textContent = n;
+      resultDisplay.textContent = n + ' -- ' + (patternDisplay.textContent==='--' ? randPattern(9) : patternDisplay.textContent);
+    });
+
+    // copy
+    document.getElementById('copyBtn').addEventListener('click', async ()=>{
+      const txt = resultDisplay.textContent || (numDisplay.textContent + ' - ' + patternDisplay.textContent);
+      try{ await navigator.clipboard.writeText(txt); document.getElementById('copyBtn').textContent = 'Copied ✓'; setTimeout(()=>document.getElementById('copyBtn').textContent='Copy result',900); }catch(e){ alert('Copy failed -- your browser may block clipboard access') }
+    });
+
+    // seed / shuffle
+    document.getElementById('seedBtn').addEventListener('click', ()=>{Math.random(); document.getElementById('seedBtn').textContent='Seed: ' + Date.now(); setTimeout(()=>document.getElementById('seedBtn').textContent='Seed: time',1200)});
+    document.getElementById('shuffleBtn').addEventListener('click', ()=>{patternBox.textContent = randPattern(9).split('').join(' ')});
+
+    // friendly keyboard: space = peek
+    window.addEventListener('keydown', (e)=>{ if(e.code === 'Space'){ e.preventDefault(); document.getElementById('peekBtn').click() } })
+
+    // init
+    patternBox.textContent = '-- -- -- -- -- -- -- -- --';
+  </script>
+</body>
+</html>
